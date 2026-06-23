@@ -1,5 +1,7 @@
 import { Ahorcado } from "../domain/Ahorcado";
 
+const NOMBRES_PARTES = ["cabeza", "cuerpo", "brazo izq", "brazo der", "pierna izq", "pierna der"];
+
 export function mountApp(root: HTMLElement, word: string): void {
   const game = new Ahorcado(word);
   render(root, game, "");
@@ -7,9 +9,13 @@ export function mountApp(root: HTMLElement, word: string): void {
 
 function render(root: HTMLElement, game: Ahorcado, mensaje: string): void {
   const mensajeFin = game.ganado() ? "GANASTE" : game.perdido() ? "PERDISTE" : "";
+  const partes = Array.from({ length: game.partesDelMuñeco() },
+    (_, i) => `<span data-testid="hangman-part">${NOMBRES_PARTES[i]}</span>`
+  ).join(" ");
 
   root.innerHTML = `
     <h1>Ahorcado</h1>
+    <div>${partes}</div>
     <p data-testid="word">${game.palabraEnmascarada()}</p>
     <p data-testid="lives">${game.vidas()}</p>
     <p data-testid="message">${mensajeFin || mensaje}</p>

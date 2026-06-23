@@ -47,6 +47,10 @@ export class Ahorcado {
     return this.ganado() || this.perdido();
   }
 
+  partesDelMuñeco(): number {
+    return this.letrasErradas.size;
+  }
+
   reiniciar(): void {
     this.letrasAdivinadas = new Set();
     this.letrasErradas = new Set();
