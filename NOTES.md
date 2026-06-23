@@ -1,0 +1,161 @@
+# NOTES — Ahorcado ATDD
+
+Este archivo es el entregable de proceso pedido en §7 de la guía:
+la lista de UTs por cada AT, pensada **antes de codear**, con la justificación
+de refactor (o por qué no hizo falta).
+
+---
+
+## AT1 — Iniciar partida
+
+> El usuario entra a `/?word=GATO` y ve `_ _ _ _` y 6 vidas.
+
+### UTs del objeto `Ahorcado`
+
+| # | Descripción | Por qué existe |
+|---|---|---|
+| 1 | `palabraEnmascarada()` devuelve guiones separados por espacio para cada letra | La UI muestra este valor directamente; tiene que tener el formato correcto |
+| 2 | `vidas()` devuelve 6 al inicio | El jugador empieza con 6 intentos; si devolviera otro número el AT fallaría |
+
+### Refactor
+No hizo falta. La implementación inicial era mínima y clara: un `Set` para
+letras adivinadas, otro para erradas, `vidasIniciales = 6`. Sin duplicación.
+
+---
+
+## AT2 — Acertar letra
+
+> El usuario tipea `A` en "GATO" y ve `_ A _ _`, vidas siguen en 6.
+
+### UTs del objeto `Ahorcado`
+
+| # | Descripción | Por qué existe |
+|---|---|---|
+| 1 | Acertar revela **todas** las ocurrencias (`ALA` + `A` → `A _ A`) | Si solo revelara la primera, el AT de "ALA" fallaría y el juego sería incorrecto |
+| 2 | Es case-insensitive: `a` == `A` | El usuario puede tipear en minúscula; el dominio no debería distinguirlo |
+| 3 | Acertar **no** descuenta vidas | Invariante básica: solo los fallos cuestan vida |
+
+### Refactor
+No hizo falta. `split("").map(...).join(" ")` es idiomático y directo.
+
+---
+
+## AT3 — Fallar letra
+
+> El usuario tipea `E` en "GATO" y ve `_ _ _ _`, vidas = 5.
+
+### UTs del objeto `Ahorcado`
+
+| # | Descripción | Por qué existe |
+|---|---|---|
+| 1 | Fallar descuenta exactamente una vida | La cuenta tiene que ser exacta; `vidas = vidasIniciales - erradas.size` |
+| 2 | Fallar **no** revela ninguna posición | La palabra enmascarada no debe cambiar ante un fallo |
+| 3 | Varios fallos distintos se acumulan correctamente | Cubre que el `Set` no satura ni cuenta doble |
+
+### Refactor
+No hizo falta. El `Set` de letras erradas hace la acumulación naturalmente.
+
+---
+
+## AT4 — Ganar
+
+> El usuario completa todas las letras y ve "GANASTE".
+
+### UTs del objeto `Ahorcado`
+
+| # | Descripción | Por qué existe |
+|---|---|---|
+| 1 | `ganado()` es `true` cuando todas las letras de la palabra fueron adivinadas | La UI solo puede mostrar "GANASTE" si el dominio sabe que ganó |
+| 2 | `ganado()` es `false` si falta al menos una letra | Evita falsos positivos: no se puede ganar a medias |
+
+### Refactor
+No hizo falta. `every(c => letrasAdivinadas.has(c))` es legible y sin
+duplicación con el resto del código.
+
+---
+
+## AT5 — Perder
+
+> El usuario falla 6 veces y ve "PERDISTE" y la palabra revelada.
+
+### UTs del objeto `Ahorcado`
+
+| # | Descripción | Por qué existe |
+|---|---|---|
+| 1 | `perdido()` es `true` después de 6 fallos | Condición de fin de juego; `vidas() === 0` |
+| 2 | `perdido()` es `false` con menos de 6 fallos | Evita terminar el juego antes de tiempo |
+| 3 | `palabraEnmascarada()` devuelve la palabra completa (sin guiones) al perder | La guía dice "la palabra revelada" — el dominio decide cuándo revelar, no la UI |
+
+### Refactor
+El UT 3 forzó agregar `if (this.perdido()) return this.palabra` al inicio de
+`palabraEnmascarada()`. Es el mínimo código y queda legible. Sin refactor extra.
+
+---
+
+## AT6 — Letra repetida
+
+> El usuario re-tipea una letra ya intentada → no penaliza y ve "Letra ya ingresada".
+
+### UTs del objeto `Ahorcado`
+
+| # | Descripción | Por qué existe |
+|---|---|---|
+| 1 | Repetir letra acertada no descuenta vidas | El juego no debe penalizar al jugador por repetir |
+| 2 | Repetir letra fallada no descuenta vidas adicionales | Ídem para letras falladas |
+| 3 | `adivinar()` devuelve `'repetida'` al repetir una letra | La UI necesita saber **por qué** no cambió nada para mostrar el aviso correcto |
+| 4 | `adivinar()` devuelve `'acertada'` para letra nueva en la palabra | Contrato completo del valor de retorno |
+| 5 | `adivinar()` devuelve `'fallada'` para letra nueva fuera de la palabra | Ídem |
+
+### Refactor
+Este AT cambió la firma de `adivinar()` de `void` a un tipo unión
+`"acertada" | "fallada" | "repetida" | "terminado"`. El cambio fue necesario
+para que la UI pueda distinguir los casos sin tener lógica de juego propia.
+Eso es exactamente la separación que pide la guía: la UI pregunta, el dominio
+responde.
+
+---
+
+## AT7 — Entrada inválida
+
+> El usuario tipea un número o símbolo → no penaliza y ve "Entrada inválida".
+> El usuario juega con la partida terminada → el estado no cambia.
+
+### UTs del objeto `Ahorcado`
+
+| # | Descripción | Por qué existe |
+|---|---|---|
+| 1 | `adivinar("3")` devuelve `'invalida'` y no descuenta vidas | Un número no es una letra; no debe contar como fallo |
+| 2 | `adivinar("!")` devuelve `'invalida'` y no descuenta vidas | Ídem para símbolos |
+| 3 | `adivinar()` con partida terminada devuelve `'terminado'` y no cambia el estado | El juego terminado es inmutable: ni aciertos ni fallos valen |
+
+### Refactor
+Se extendió el tipo de retorno de `adivinar()` con `| "invalida"`.
+La validación `/^[A-Z]$/.test(l)` corre antes de cualquier otra comprobación,
+lo que mantiene el flujo limpio: primero se descarta lo inválido, luego lo
+terminado, luego lo repetido, y finalmente se procesa la letra.
+
+---
+
+## Separación lógica / UI — resumen
+
+Toda la lógica de juego vive en `src/domain/Ahorcado.ts`:
+- qué letras están adivinadas y cuáles falladas
+- cuántas vidas quedan
+- si ganó, perdió o la partida sigue
+- qué mostrar en la palabra (guiones vs letras vs revelada al perder)
+- si una entrada es válida, repetida o nueva
+
+`src/ui/main.ts` **no toma ninguna decisión de juego**: recibe el resultado de
+`adivinar()` y lo mapea a texto para mostrar. Si se quisiera cambiar la UI
+(por ejemplo, pasar a React o a una app de terminal), `Ahorcado.ts` no
+cambiaría una sola línea.
+
+---
+
+## Por qué el AT corre contra la app real
+
+Un test de componente en jsdom puede dar verde aunque la app real no arranque:
+nunca prueba el `index.html`, el módulo de arranque ni la integración completa.
+El AT con Playwright abre un navegador real contra `http://localhost:5173`,
+así que su verde significa que el juego **funciona de verdad**, no solo que el
+componente renderiza.
