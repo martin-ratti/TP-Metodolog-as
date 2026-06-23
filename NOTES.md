@@ -152,6 +152,46 @@ cambiaría una sola línea.
 
 ---
 
+## AT8 — Jugar de nuevo
+
+> El usuario gana/pierde y presiona "Jugar de nuevo" → estado reseteado sin recargar.
+
+### UTs del objeto `Ahorcado`
+
+| # | Descripción | Por qué existe |
+|---|---|---|
+| 1 | `reiniciar()` resetea las vidas a 6 | La nueva partida tiene que empezar con todas las vidas |
+| 2 | `reiniciar()` resetea la palabra enmascarada a guiones | El tablero tiene que volver a estar oculto |
+| 3 | `reiniciar()` permite volver a jugar (`ganado()` y `terminado()` vuelven a false) | Sin esto el dominio bloquearía los nuevos intentos con `"terminado"` |
+
+### Refactor
+No hizo falta. `reiniciar()` limpia los dos `Set` y eso es suficiente — la
+palabra queda intacta porque es `readonly`, y toda la lógica se deriva de esos
+dos conjuntos.
+
+---
+
+## AT9 — Acentos y ñ
+
+> `á`==`A`, `é`==`E`, etc. La `Ñ` funciona como letra independiente.
+
+### UTs del objeto `Ahorcado`
+
+| # | Descripción | Por qué existe |
+|---|---|---|
+| 1 | `adivinar("é")` revela las `E` de la palabra | El input del usuario puede tener acento; el dominio lo normaliza |
+| 2 | Palabra con acento en el constructor se normaliza (`ÁRBOL` → `ARBOL`) | La palabra almacenada siempre está sin acentos para que las comparaciones funcionen |
+| 3 | `adivinar("ñ")` revela las `Ñ` de la palabra | La `Ñ` es letra propia del español y no debe eliminarse en la normalización |
+| 4 | `adivinar("é")` no descuenta vidas | El acento normalizado acierta la letra; no es un fallo |
+
+### Refactor
+La función `normalizar()` reemplaza explícitamente cada vocal acentuada
+(`Á→A`, `É→E`, etc.) en lugar de usar `NFD` + regex, porque `NFD`
+descomponía la `Ñ` en `N` + combinador y rompía el caso 3. El reemplazo
+explícito es más legible y correcto para el español.
+
+---
+
 ## Por qué el AT corre contra la app real
 
 Un test de componente en jsdom puede dar verde aunque la app real no arranque:
