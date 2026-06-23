@@ -28,3 +28,12 @@ Then("se ve el mensaje {string}", async ({ page }, mensaje: string) => {
 When("el jugador presiona {string}", async ({ page }, boton: string) => {
   await page.getByRole("button", { name: boton }).click();
 });
+
+Given("que el jugador entra sin especificar palabra", async ({ page }) => {
+  await page.goto("/");
+});
+
+Then("la palabra tiene al menos una letra", async ({ page }) => {
+  const texto = await page.getByTestId("word").innerText();
+  expect(texto.trim().length).toBeGreaterThan(0);
+});
