@@ -69,3 +69,23 @@ describe("Ahorcado - ganar", () => {
     expect(juego.ganado()).toBe(false);
   });
 });
+
+describe("Ahorcado - perder", () => {
+  it("perdido() es true despues de 6 fallos", () => {
+    const juego = new Ahorcado("OSO");
+    ["A", "B", "C", "D", "E", "F"].forEach((l) => juego.adivinar(l));
+    expect(juego.perdido()).toBe(true);
+  });
+
+  it("perdido() es false con menos de 6 fallos", () => {
+    const juego = new Ahorcado("OSO");
+    ["A", "B", "C"].forEach((l) => juego.adivinar(l));
+    expect(juego.perdido()).toBe(false);
+  });
+
+  it("palabraEnmascarada revela la palabra completa al perder", () => {
+    const juego = new Ahorcado("OSO");
+    ["A", "B", "C", "D", "E", "F"].forEach((l) => juego.adivinar(l));
+    expect(juego.palabraEnmascarada()).toBe("OSO");
+  });
+});
