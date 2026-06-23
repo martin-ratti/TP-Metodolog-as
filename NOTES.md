@@ -192,6 +192,46 @@ explícito es más legible y correcto para el español.
 
 ---
 
+## AT10 — Palabra al azar
+
+> Sin `?word=` en la URL, la app elige una palabra de una lista; con `?word=` usa esa.
+
+### UTs del objeto dominio (`elegirPalabra` + `PALABRAS`)
+
+| # | Descripción | Por qué existe |
+|---|---|---|
+| 1 | `elegirPalabra(lista, indice)` devuelve la palabra en ese índice | Este es el **seam del azar**: en tests se pasa un índice fijo; en producción se pasa `Math.random()`. Sin este seam no se puede testear determinísticamente |
+| 2 | `PALABRAS` tiene al menos una palabra | La lista no puede estar vacía o el arranque crashearía |
+| 3 | Todas las palabras de `PALABRAS` son strings no vacíos | Invariante de calidad de los datos |
+
+### Refactor
+No hizo falta. La función `elegirPalabra` es un one-liner intencional — su
+valor no es la complejidad sino el **diseño**: separar "elegir" (dominio,
+testeable) de "generar el número al azar" (efecto, en el arranque). Esa
+separación es la lección de testabilidad que señala la guía.
+
+---
+
+## AT11 — Dibujo progresivo del ahorcado
+
+> Cada fallo agrega una parte del muñeco; 6 fallos = muñeco completo.
+
+### UTs del objeto `Ahorcado`
+
+| # | Descripción | Por qué existe |
+|---|---|---|
+| 1 | Con 0 errores `partesDelMuñeco()` devuelve 0 | El muñeco empieza vacío |
+| 2 | Con 1 error devuelve 1 | Cada fallo suma exactamente una parte |
+| 3 | Con 3 errores devuelve 3 | Cubre acumulación intermedia |
+| 4 | Con 6 errores devuelve 6 | Muñeco completo coincide con la derrota |
+
+### Refactor
+`partesDelMuñeco()` es `letrasErradas.size` — no duplica lógica porque
+`vidas()` ya usa el mismo valor. Son dos vistas distintas del mismo dato:
+una dice cuántas vidas quedan, la otra cuántas partes se dibujan.
+
+---
+
 ## Por qué el AT corre contra la app real
 
 Un test de componente en jsdom puede dar verde aunque la app real no arranque:
