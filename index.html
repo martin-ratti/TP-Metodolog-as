@@ -4,6 +4,150 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ahorcado</title>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: 'Segoe UI', sans-serif;
+        background: #1a1a2e;
+        color: #eee;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #app {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        width: 100%;
+        max-width: 480px;
+        padding: 32px 16px;
+      }
+
+      h1 {
+        font-size: 2.4rem;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        color: #e94560;
+      }
+
+      /* ── SVG gallows ── */
+      .gallows svg {
+        filter: drop-shadow(0 0 8px rgba(233, 69, 96, 0.4));
+      }
+
+      /* ── palabra ── */
+      [data-testid="word"] {
+        font-size: 2rem;
+        letter-spacing: 12px;
+        font-weight: 700;
+        color: #f5f5f5;
+        min-height: 2.5rem;
+        text-align: center;
+      }
+
+      /* ── vidas ── */
+      .lives-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1rem;
+        color: #aaa;
+      }
+
+      .hearts {
+        display: flex;
+        gap: 4px;
+      }
+
+      .heart {
+        font-size: 1.2rem;
+        transition: opacity 0.3s;
+      }
+
+      .heart.lost { opacity: 0.15; }
+
+      [data-testid="lives"] { display: none; } /* solo para los AT, oculto visualmente */
+
+      /* ── mensaje ── */
+      [data-testid="message"] {
+        font-size: 1.1rem;
+        font-weight: 600;
+        min-height: 1.5rem;
+        color: #e94560;
+        letter-spacing: 2px;
+        text-align: center;
+      }
+
+      /* ── letras intentadas ── */
+      .used-letters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        justify-content: center;
+        min-height: 36px;
+      }
+
+      .used-letter {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+
+      .used-letter.hit  { background: #16213e; color: #4ecca3; border: 1px solid #4ecca3; }
+      .used-letter.miss { background: #16213e; color: #e94560; border: 1px solid #e94560; }
+
+      /* ── input + botón ── */
+      .input-row {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+      }
+
+      input[type="text"] {
+        flex: 1;
+        padding: 12px 16px;
+        font-size: 1.2rem;
+        text-align: center;
+        text-transform: uppercase;
+        background: #16213e;
+        color: #eee;
+        border: 2px solid #0f3460;
+        border-radius: 10px;
+        outline: none;
+        letter-spacing: 4px;
+        transition: border-color 0.2s;
+      }
+
+      input[type="text"]:focus { border-color: #e94560; }
+
+      button {
+        padding: 12px 22px;
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        background: #e94560;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
+        white-space: nowrap;
+      }
+
+      button:hover  { background: #c73652; }
+      button:active { transform: scale(0.97); }
+
+      button.secondary {
+        background: #0f3460;
+      }
+      button.secondary:hover { background: #1a4a80; }
+    </style>
   </head>
   <body>
     <div id="app"></div>
