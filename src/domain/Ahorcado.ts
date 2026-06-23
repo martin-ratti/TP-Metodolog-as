@@ -46,4 +46,9 @@ export class Ahorcado {
   terminado(): boolean {
     return this.ganado() || this.perdido();
   }
+
+  reiniciar(): void {
+    this.letrasAdivinadas = new Set();
+    this.letrasErradas = new Set();
+  }
 }

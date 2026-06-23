@@ -15,10 +15,11 @@ function render(root: HTMLElement, game: Ahorcado, mensaje: string): void {
     <p data-testid="message">${mensajeFin || mensaje}</p>
     <input type="text" maxlength="1" placeholder="Letra" />
     <button>Adivinar</button>
+    ${game.terminado() ? '<button>Jugar de nuevo</button>' : ""}
   `;
 
   const input = root.querySelector("input")!;
-  const button = root.querySelector("button")!;
+  const btnAdivinar = root.querySelector("button")!;
 
   const handleGuess = () => {
     const letra = input.value.trim();
@@ -31,8 +32,16 @@ function render(root: HTMLElement, game: Ahorcado, mensaje: string): void {
     render(root, game, aviso);
   };
 
-  button.addEventListener("click", handleGuess);
+  btnAdivinar.addEventListener("click", handleGuess);
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") handleGuess();
   });
+
+  const btnReiniciar = root.querySelector("button:last-of-type");
+  if (btnReiniciar && btnReiniciar !== btnAdivinar) {
+    btnReiniciar.addEventListener("click", () => {
+      game.reiniciar();
+      render(root, game, "");
+    });
+  }
 }
