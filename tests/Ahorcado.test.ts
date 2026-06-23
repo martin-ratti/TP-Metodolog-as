@@ -170,3 +170,30 @@ describe("Ahorcado - jugar de nuevo", () => {
     expect(juego.terminado()).toBe(false);
   });
 });
+
+describe("Ahorcado - acentos y ñ", () => {
+  it("adivinar con acento equivale a la letra sin acento", () => {
+    const juego = new Ahorcado("MURCIELAGO");
+    juego.adivinar("é");
+    expect(juego.palabraEnmascarada()).toBe("_ _ _ _ _ E _ A _ _");
+  });
+
+  it("la palabra con acento se normaliza al construir", () => {
+    const juego = new Ahorcado("ÁRBOL");
+    expect(juego.palabraEnmascarada()).toBe("_ _ _ _ _");
+    juego.adivinar("A");
+    expect(juego.palabraEnmascarada()).toBe("A _ _ _ _");
+  });
+
+  it("la ñ se trata como letra independiente", () => {
+    const juego = new Ahorcado("MAÑANA");
+    juego.adivinar("ñ");
+    expect(juego.palabraEnmascarada()).toBe("_ A Ñ A _ A");
+  });
+
+  it("adivinar con acento no descuenta vidas", () => {
+    const juego = new Ahorcado("MURCIELAGO");
+    juego.adivinar("é");
+    expect(juego.vidas()).toBe(6);
+  });
+});
