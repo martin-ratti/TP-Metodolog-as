@@ -19,4 +19,10 @@ describe("Ahorcado - acertar letra", () => {
     juego.adivinar("A");
     expect(juego.palabraEnmascarada()).toBe("A _ A");
   });
+
+  it("es case-insensitive: adivinar en minuscula equivale a mayuscula", () => {
+    const juego = new Ahorcado("GATO");
+    juego.adivinar("a");
+    expect(juego.palabraEnmascarada()).toBe("_ A _ _");
+  });
 });
