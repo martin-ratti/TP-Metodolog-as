@@ -70,7 +70,7 @@
 <h2 align="left">💻 Instrucciones de Instalación</h2>
 <ol>
   <li>Clonar el repositorio en tu máquina local:<br>
-    <code>git clone https://github.com/agussantinelli/ahorcado.git</code>
+    <code>git clone https://github.com/martin-ratti/TP-Ahorcado</code>
   </li>
   <li>Navegar al directorio del proyecto:<br>
     <code>cd ahorcado</code>
