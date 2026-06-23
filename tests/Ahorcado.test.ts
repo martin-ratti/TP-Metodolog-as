@@ -12,3 +12,11 @@ describe("Ahorcado - iniciar partida", () => {
     expect(juego.vidas()).toBe(6);
   });
 });
+
+describe("Ahorcado - acertar letra", () => {
+  it("revela todas las ocurrencias de la letra acertada", () => {
+    const juego = new Ahorcado("ALA");
+    juego.adivinar("A");
+    expect(juego.palabraEnmascarada()).toBe("A _ A");
+  });
+});
