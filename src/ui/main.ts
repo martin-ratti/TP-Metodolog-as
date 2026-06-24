@@ -10,6 +10,13 @@ const SVG_PARTES = [
   `<line data-testid="hangman-part" x1="100" y1="110" x2="125" y2="140" stroke="#e94560" stroke-width="3"/>`,
 ];
 
+const TOTAL_PARTES = SVG_PARTES.length;
+
+function partesAMostrar(errores: number, vidasIniciales: number): number {
+  const factor = TOTAL_PARTES / vidasIniciales;
+  return Math.min(TOTAL_PARTES, Math.round(errores * factor));
+}
+
 function dibujoAhorcado(partes: number): string {
   const cuerpo = SVG_PARTES.slice(0, partes).join("\n");
   return `
@@ -44,10 +51,19 @@ function letrasUsadas(game: Ahorcado): string {
 }
 
 export function mountApp(root: HTMLElement, getWord: () => string): void {
-  mostrarPantallaInicio(root, getWord);
+  let dificultadSeleccionada = "normal";
+
+  mostrarPantallaInicio(root, getWord, (nivel) => {
+    dificultadSeleccionada = nivel;
+  }, () => dificultadSeleccionada);
 }
 
-function mostrarPantallaInicio(root: HTMLElement, getWord: () => string): void {
+function mostrarPantallaInicio(
+  root: HTMLElement,
+  getWord: () => string,
+  setDificultad: (nivel: string) => void,
+  getDificultad: () => string,
+): void {
   root.innerHTML = `
     <section data-testid="start-screen">
       <h1>Ahorcado</h1>
@@ -70,23 +86,32 @@ function mostrarPantallaInicio(root: HTMLElement, getWord: () => string): void {
     </section>
   `;
 
+  const radios = root.querySelectorAll<HTMLInputElement>('input[name="dificultad"]');
+  radios.forEach((radio) => {
+    radio.addEventListener("change", () => {
+      if (radio.checked) {
+        setDificultad(radio.value);
+      }
+    });
+  });
+
   const btnJugar = root.querySelector("button")!;
-  btnJugar.addEventListener("click", () => iniciarPartida(root, getWord));
+  btnJugar.addEventListener("click", () => iniciarPartida(root, getWord, getDificultad()));
 }
 
-function iniciarPartida(root: HTMLElement, getWord: () => string): void {
-  const game = new Ahorcado(getWord(), vidasSegunDificultad((document.querySelector<HTMLInputElement>('input[name="dificultad"]:checked')?.value) || "normal"));
-  render(root, game, getWord);
+function iniciarPartida(root: HTMLElement, getWord: () => string, dificultad: string): void {
+  const game = new Ahorcado(getWord(), vidasSegunDificultad(dificultad));
+  render(root, game, getWord, dificultad);
 }
 
-function render(root: HTMLElement, game: Ahorcado, getWord: () => string, mensaje = ""): void {
+function render(root: HTMLElement, game: Ahorcado, getWord: () => string, dificultad: string, mensaje = ""): void {
   const mensajeFin = game.ganado() ? "GANASTE" : game.perdido() ? "PERDISTE" : "";
   const vidas = game.vidas();
 
   root.innerHTML = `
     <section class="game-screen">
       <h1>Ahorcado</h1>
-      ${dibujoAhorcado(game.partesDelMuñeco())}
+      ${dibujoAhorcado(partesAMostrar(game.partesDelMuñeco(), vidasSegunDificultad(dificultad)))}
       <p data-testid="word">${game.palabraEnmascarada()}</p>
       <div class="lives-row">
         <div class="hearts">${corazones(vidas)}</div>
@@ -114,7 +139,7 @@ function render(root: HTMLElement, game: Ahorcado, getWord: () => string, mensaj
     const aviso =
       resultado === "repetida" ? "Letra ya ingresada" :
       resultado === "invalida" ? "Entrada inválida"   : "";
-    render(root, game, getWord, aviso);
+    render(root, game, getWord, dificultad, aviso);
   };
 
   btnAdivinar.addEventListener("click", handleGuess);
@@ -122,6 +147,6 @@ function render(root: HTMLElement, game: Ahorcado, getWord: () => string, mensaj
 
   const btnReiniciar = root.querySelector("button.secondary");
   if (btnReiniciar) {
-    btnReiniciar.addEventListener("click", () => iniciarPartida(root, getWord));
+    btnReiniciar.addEventListener("click", () => iniciarPartida(root, getWord, dificultad));
   }
 }
