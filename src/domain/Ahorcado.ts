@@ -2,11 +2,12 @@ export class Ahorcado {
   private readonly palabra: string;
   private letrasAdivinadas: Set<string> = new Set();
   private letrasErradas: Set<string> = new Set();
-  private readonly vidasIniciales = 6;
+  private readonly vidasIniciales: number;
 
-  constructor(palabra: string) {
-    this.palabra = normalizar(palabra);
-  }
+constructor(palabra: string, vidasIniciales: number = 6) {
+  this.palabra = normalizar(palabra);
+  this.vidasIniciales = vidasIniciales;
+}
 
   adivinar(letra: string): "acertada" | "fallada" | "repetida" | "terminado" | "invalida" {
     const l = normalizar(letra);

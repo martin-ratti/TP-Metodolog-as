@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Ahorcado } from "../src/domain/Ahorcado";
 import { elegirPalabra, PALABRAS } from "../src/domain/palabras";
+import { vidasSegunDificultad } from "../src/domain/dificultad";
 
 describe("Ahorcado - iniciar partida", () => {
   it("muestra guiones para todas las letras al iniciar", () => {
@@ -258,5 +259,17 @@ describe("Ahorcado - dificultad", () => {
     juego.adivinar("E");
     juego.reiniciar();
     expect(juego.vidas()).toBe(2);
+  });
+
+  it("Fácil otorga 6 vidas", () => {
+    expect(vidasSegunDificultad("facil")).toBe(6);
+  });
+
+  it("Normal otorga 4 vidas", () => {
+    expect(vidasSegunDificultad("normal")).toBe(4);
+  });
+
+  it("Difícil otorga 2 vidas", () => {
+    expect(vidasSegunDificultad("dificil")).toBe(2);
   });
 });
