@@ -1,4 +1,5 @@
 import { Ahorcado } from "../domain/Ahorcado";
+import { vidasSegunDificultad } from "../domain/dificultad";
 
 const SVG_PARTES = [
   `<circle data-testid="hangman-part" cx="100" cy="40" r="15" stroke="#e94560" stroke-width="3" fill="none"/>`,
@@ -50,7 +51,22 @@ function mostrarPantallaInicio(root: HTMLElement, getWord: () => string): void {
   root.innerHTML = `
     <section data-testid="start-screen">
       <h1>Ahorcado</h1>
-      <button>Jugar</button>
+      <fieldset class="dificultad" data-testid="dificultad">
+        <legend>Dificultad</legend>
+        <label>
+          <input type="radio" name="dificultad" value="facil" />
+          Fácil
+        </label>
+        <label>
+          <input type="radio" name="dificultad" value="normal" checked />
+          Normal
+        </label>
+        <label>
+          <input type="radio" name="dificultad" value="dificil" />
+          Difícil
+        </label>
+      </fieldset>
+      <button data-testid="start-game-btn">Jugar</button>
     </section>
   `;
 
@@ -59,7 +75,7 @@ function mostrarPantallaInicio(root: HTMLElement, getWord: () => string): void {
 }
 
 function iniciarPartida(root: HTMLElement, getWord: () => string): void {
-  const game = new Ahorcado(getWord());
+  const game = new Ahorcado(getWord(), vidasSegunDificultad((document.querySelector<HTMLInputElement>('input[name="dificultad"]:checked')?.value) || "normal"));
   render(root, game, getWord);
 }
 
