@@ -18,3 +18,13 @@ Característica: Dificultad
     Cuando el jugador elige la dificultad "Difícil"
     Y el jugador inicia la partida
     Entonces se ven 2 vidas
+
+  Escenario: Jugar de nuevo conserva la dificultad elegida
+    Dado que el jugador entra a la app con la palabra "OSO"
+    Cuando el jugador elige la dificultad "Difícil"
+    Y el jugador inicia la partida
+    Y el jugador adivina la letra "A"
+    Y el jugador adivina la letra "B"
+    Entonces se ve el mensaje "PERDISTE"
+    Cuando el jugador presiona "Jugar de nuevo"
+    Entonces se ven 2 vidas
