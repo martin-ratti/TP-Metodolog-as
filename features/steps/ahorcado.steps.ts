@@ -9,6 +9,7 @@ Given("que el jugador entra a la app con la palabra {string}", async ({ page }, 
 
 Given("una partida con la palabra {string}", async ({ page }, palabra: string) => {
   await page.goto(`/?word=${palabra}`);
+  await page.getByRole("button", { name: "Jugar" }).click();
 });
 
 When("el jugador elige la dificultad {string}", async ({ page }, nivel: string) => {
@@ -51,6 +52,7 @@ When("el jugador presiona {string}", async ({ page }, boton: string) => {
 
 Given("que el jugador entra sin especificar palabra", async ({ page }) => {
   await page.goto("/");
+  await page.getByRole("button", { name: "Jugar" }).click();
 });
 
 Then("se ven {int} partes del muñeco", async ({ page }, partes: number) => {
