@@ -125,33 +125,59 @@
       .used-letter.hit  { background: #16213e; color: #4ecca3; border: 1px solid #4ecca3; }
       .used-letter.miss { background: #16213e; color: #e94560; border: 1px solid #e94560; }
 
-      /* ── input + botón ── */
-      .input-row {
+      /* ── teclado virtual ── */
+      .keyboard {
         display: flex;
-        gap: 10px;
+        flex-direction: column;
+        gap: 8px;
         width: 100%;
+        max-width: 400px;
+        margin-top: 10px;
       }
 
-      .game-screen .input-row {
+      .keyboard-row {
+        display: flex;
         justify-content: center;
+        gap: 6px;
       }
 
-      input[type="text"] {
+      .key {
         flex: 1;
-        padding: 12px 16px;
-        font-size: 1.2rem;
-        text-align: center;
-        text-transform: uppercase;
+        padding: 12px 0;
+        font-size: 1.1rem;
+        font-weight: 700;
         background: #16213e;
         color: #eee;
         border: 2px solid #0f3460;
-        border-radius: 10px;
-        outline: none;
-        letter-spacing: 4px;
-        transition: border-color 0.2s;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        min-width: 30px;
       }
 
-      input[type="text"]:focus { border-color: #e94560; }
+      .key:not([disabled]):hover {
+        background: #1a4a80;
+        border-color: #e94560;
+        transform: translateY(-2px);
+      }
+
+      .key:not([disabled]):active {
+        transform: scale(0.95);
+      }
+
+      .key.acertada {
+        background: #16213e;
+        color: #4ecca3;
+        border-color: #4ecca3;
+        opacity: 0.8;
+      }
+
+      .key.fallada {
+        background: #16213e;
+        color: #e94560;
+        border-color: #e94560;
+        opacity: 0.5;
+      }
 
       button {
         padding: 12px 22px;

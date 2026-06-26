@@ -43,16 +43,25 @@ function corazones(vidas: number): string {
   ).join("");
 }
 
-function letrasUsadas(game: Ahorcado): string {
-  const hits = (game as any).letrasAdivinadas as Set<string>;
-  const miss = (game as any).letrasErradas as Set<string>;
-  const chips = [
-    ...[...hits].map(l => `<span class="used-letter hit">${l}</span>`),
-    ...[...miss].map(l => `<span class="used-letter miss">${l}</span>`),
+function tecladoHTML(game: Ahorcado): string {
+  if (game.terminado()) return "";
+  
+  const layout = [
+    ["Q","W","E","R","T","Y","U","I","O","P"],
+    ["A","S","D","F","G","H","J","K","L","Ñ"],
+    ["Z","X","C","V","B","N","M"]
   ];
-  return chips.length
-    ? `<div class="used-letters">${chips.join("")}</div>`
-    : `<div class="used-letters"></div>`;
+
+  const filas = layout.map(fila => {
+    const botones = fila.map(letra => {
+      const estado = game.estadoLetra(letra);
+      const disabled = estado !== "disponible" ? "disabled" : "";
+      return `<button class="key ${estado}" ${disabled}>${letra}</button>`;
+    }).join("");
+    return `<div class="keyboard-row">${botones}</div>`;
+  }).join("");
+
+  return `<div class="keyboard">${filas}</div>`;
 }
 
 export function mountApp(root: HTMLElement, getWord: () => string): void {
@@ -168,33 +177,32 @@ function render(
       </div>
       <span data-testid="lives" style="display:none">${vidas}</span>
       ${normalMessageHTML}
-      ${letrasUsadas(game)}
-      <div class="input-row">
-        <input type="text" maxlength="1" placeholder="A" autocomplete="off" />
-        <button>Adivinar</button>
-      </div>
-      ${!game.terminado() ? '<button class="back-to-menu">Volver al menú</button>' : ""}
+      ${tecladoHTML(game)}
+      ${!game.terminado() ? '<button class="back-to-menu" style="margin-top: 15px">Volver al menú</button>' : ""}
     </section>
     ${modalHTML}
   `;
 
-  const input = root.querySelector("input")!;
-  const btnAdivinar = root.querySelector("button:not(.secondary)")!;
-  if (!game.terminado()) input.focus();
+  const keys = root.querySelectorAll<HTMLButtonElement>(".key:not([disabled])");
+  keys.forEach(keyBtn => {
+    keyBtn.addEventListener("click", () => {
+      const letra = keyBtn.textContent;
+      if (!letra) return;
+      game.adivinar(letra);
+      render(root, game, getWord, dificultad, setDificultad, getDificultad);
+    });
+  });
 
-  const handleGuess = () => {
-    const letra = input.value.trim();
-    if (!letra) return;
-    const resultado = game.adivinar(letra);
-    input.value = "";
-    const aviso =
-      resultado === "repetida" ? "Letra ya ingresada" :
-        resultado === "invalida" ? "Entrada inválida" : "";
-    render(root, game, getWord, dificultad, setDificultad, getDificultad, aviso);
+  const handleKeydown = (e: KeyboardEvent) => {
+    if (game.terminado()) return;
+    const letra = e.key.toUpperCase();
+    if (/^[A-ZÑ]$/.test(letra)) {
+      game.adivinar(letra);
+      render(root, game, getWord, dificultad, setDificultad, getDificultad);
+    }
   };
 
-  btnAdivinar.addEventListener("click", handleGuess);
-  input.addEventListener("keydown", (e) => { if (e.key === "Enter") handleGuess(); });
+  window.onkeydown = handleKeydown;
 
   const btnReiniciar = root.querySelector("button.secondary");
   if (btnReiniciar) {
