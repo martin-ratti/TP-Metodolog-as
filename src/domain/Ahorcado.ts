@@ -52,6 +52,13 @@ constructor(palabra: string, vidasIniciales: number = 6) {
     return this.letrasErradas.size;
   }
 
+  estadoLetra(letra: string): "disponible" | "acertada" | "fallada" {
+    const l = normalizar(letra);
+    if (this.letrasAdivinadas.has(l)) return "acertada";
+    if (this.letrasErradas.has(l)) return "fallada";
+    return "disponible";
+  }
+
   reiniciar(): void {
     this.letrasAdivinadas = new Set();
     this.letrasErradas = new Set();
