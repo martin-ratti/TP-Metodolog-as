@@ -202,9 +202,13 @@ describe("Ahorcado - acentos y ñ", () => {
 
 describe("palabra al azar - seam elegirPalabra", () => {
   it("elegirPalabra devuelve la palabra en el indice dado", () => {
-    const lista = ["GATO", "PERRO", "OSO"];
-    expect(elegirPalabra(lista, 0)).toBe("GATO");
-    expect(elegirPalabra(lista, 2)).toBe("OSO");
+    const lista = [
+      { palabra: "GATO", pista: "1" },
+      { palabra: "PERRO", pista: "2" },
+      { palabra: "OSO", pista: "3" },
+    ];
+    expect(elegirPalabra(lista, 0)).toEqual({ palabra: "GATO", pista: "1" });
+    expect(elegirPalabra(lista, 2)).toEqual({ palabra: "OSO", pista: "3" });
   });
 
   it("PALABRAS tiene al menos una palabra", () => {
@@ -212,7 +216,11 @@ describe("palabra al azar - seam elegirPalabra", () => {
   });
 
   it("todas las palabras de PALABRAS son strings no vacios", () => {
-    expect(PALABRAS.every((p) => typeof p === "string" && p.length > 0)).toBe(true);
+    PALABRAS.forEach(p => {
+      expect(typeof p.palabra).toBe("string");
+      expect(p.palabra.length).toBeGreaterThan(0);
+      expect(typeof p.pista).toBe("string");
+    });
   });
 });
 

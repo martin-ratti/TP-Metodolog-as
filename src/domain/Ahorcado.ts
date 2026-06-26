@@ -1,13 +1,15 @@
 export class Ahorcado {
-  private readonly palabra: string;
+  private palabra: string;
   private letrasAdivinadas: Set<string> = new Set();
   private letrasErradas: Set<string> = new Set();
-  private readonly vidasIniciales: number;
+  private vidasDisponibles: number;
+  private _pista: string;
 
-constructor(palabra: string, vidasIniciales: number = 6) {
-  this.palabra = normalizar(palabra);
-  this.vidasIniciales = vidasIniciales;
-}
+  constructor(palabra: string, vidasDisponibles = 6, pista = "") {
+    this.palabra = normalizar(palabra);
+    this.vidasDisponibles = vidasDisponibles;
+    this._pista = pista;
+  }
 
   adivinar(letra: string): "acertada" | "fallada" | "repetida" | "terminado" | "invalida" {
     const l = normalizar(letra);
@@ -33,7 +35,7 @@ constructor(palabra: string, vidasIniciales: number = 6) {
   }
 
   vidas(): number {
-    return this.vidasIniciales - this.letrasErradas.size;
+    return this.vidasDisponibles - this.letrasErradas.size;
   }
 
   ganado(): boolean {
@@ -50,6 +52,10 @@ constructor(palabra: string, vidasIniciales: number = 6) {
 
   partesDelMuñeco(): number {
     return this.letrasErradas.size;
+  }
+
+  pista(): string {
+    return this._pista;
   }
 
   estadoLetra(letra: string): "disponible" | "acertada" | "fallada" {
