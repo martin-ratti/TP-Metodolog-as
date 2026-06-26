@@ -292,3 +292,15 @@ describe("Ahorcado - estadoLetra (teclado en pantalla)", () => {
     expect(juego.estadoLetra("E")).toBe("fallada");
   });
 });
+
+describe("Ahorcado - Pista / Categoría", () => {
+  it("El juego expone la pista asociada a la palabra", () => {
+    const juego = new Ahorcado("GATO", 6, "Felino doméstico");
+    expect(juego.pista()).toBe("Felino doméstico");
+  });
+
+  it("Si no se provee pista, devuelve string vacío", () => {
+    const juego = new Ahorcado("PERRO");
+    expect(juego.pista()).toBe("");
+  });
+});
