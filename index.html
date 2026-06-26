@@ -118,6 +118,17 @@
       }
     }
 
+    .shake-red {
+      animation: shake-red 0.5s cubic-bezier(.36,.07,.19,.97) both;
+    }
+
+    @keyframes shake-red {
+      10%, 90% { transform: translate3d(-2px, 0, 0); filter: drop-shadow(0 0 10px rgba(255, 7, 58, 0.6)); }
+      20%, 80% { transform: translate3d(4px, 0, 0); filter: drop-shadow(0 0 20px rgba(255, 7, 58, 0.8)); }
+      30%, 50%, 70% { transform: translate3d(-8px, 0, 0); filter: drop-shadow(0 0 30px rgba(255, 7, 58, 1)); }
+      40%, 60% { transform: translate3d(8px, 0, 0); filter: drop-shadow(0 0 30px rgba(255, 7, 58, 1)); }
+    }
+
     /* ── palabra ── */
     [data-testid="word"] {
       font-size: 2rem;
@@ -393,7 +404,8 @@
       align-items: center;
       justify-content: center;
       z-index: 100;
-      animation: appearModal 0.3s ease-out forwards;
+      opacity: 0;
+      animation: appearModal 0.3s ease-out 0.8s forwards;
     }
 
     .modal-content {

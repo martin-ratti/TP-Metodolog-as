@@ -17,15 +17,16 @@ function partesAMostrar(errores: number, vidasTotales: number): number {
   return Math.floor(errores * proporcion);
 }
 
-function dibujoAhorcado(partes: number): string {
+function dibujoAhorcado(partes: number, isLost: boolean = false): string {
   const cuerpo = SVG_PARTES.slice(0, partes).map((part, index) => {
-    if (index === partes - 1) {
+    if (index === partes - 1 && !isLost) {
       return part.replace('/>', ' style="animation: draw 0.4s ease-out forwards;" />');
     }
     return part;
   }).join("\n");
+  const extraClass = isLost ? "shake-red" : "";
   return `
-    <div class="gallows">
+    <div class="gallows ${extraClass}">
       <svg width="160" height="200">
         <line x1="20" y1="190" x2="140" y2="190" stroke="#4a4a7a" stroke-width="3"/>
         <line x1="60" y1="190" x2="60" y2="10"  stroke="#4a4a7a" stroke-width="3"/>
@@ -188,7 +189,7 @@ function render(
   root.innerHTML = `
     <section class="game-screen">
       <h1>Ahorcado</h1>
-      ${dibujoAhorcado(partesAMostrar(game.partesDelMuñeco(), vidasSegunDificultad(dificultad)))}
+      ${dibujoAhorcado(partesAMostrar(game.partesDelMuñeco(), vidasSegunDificultad(dificultad)), game.perdido())}
       <p data-testid="word">${game.palabraEnmascarada()}</p>
       <div class="lives-row">
         <div class="hearts">${corazones(vidas)}</div>
