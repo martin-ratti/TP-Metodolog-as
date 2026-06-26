@@ -59,7 +59,7 @@ La aplicación cuenta con todos los escenarios base y 4 características avanzad
 * **AT6 — Letra repetida:** Ingresar una letra que ya fue intentada (sea acierto o fallo) muestra un mensaje de advertencia y no penaliza vidas.
 * **AT7 — Entrada inválida:** Tipear números, símbolos o intentar jugar con la partida ya finalizada devuelve un estado controlado y no descuenta vidas.
 
-### Desafío Aprobación Directa (AT8 - AT14)
+### Desafío Aprobación Directa (AT8 - AT16)
 * **AT8 — Jugar de nuevo:** Permite al usuario reiniciar la partida en caliente sin necesidad de recargar la página completa en el navegador.
 * **AT9 — Soporte de acentos y Ñ:**
   * Normaliza diacríticos para que letras con tilde (ej: `á`, `é`) actúen de forma equivalente a sus vocales normales, mejorando la usabilidad.
@@ -69,6 +69,8 @@ La aplicación cuenta con todos los escenarios base y 4 características avanzad
 * **AT12 — Pantalla de inicio:** Incorpora un menú inicial que da la bienvenida al usuario y permite arrancar el juego bajo demanda.
 * **AT13 — Dificultad de partida:** Permite seleccionar entre distintos niveles de dificultad (Fácil, Normal, Difícil), que ajustan dinámicamente la cantidad de vidas iniciales (6, 4, 2 respectivamente).
 * **AT14 — Volver al menú:** Implementa la opción de abandonar o terminar una partida y regresar a la pantalla de inicio sin perder el contexto de la aplicación.
+* **AT15 — Teclado en pantalla:** Interfaz de teclado virtual interactivo que permite ingresar letras con clics o touch, reflejando visualmente el estado de cada letra (disponible, acertada o fallada).
+* **AT16 — Pistas y categorías:** El juego permite asociar una pista a la palabra oculta. El jugador puede revelarla voluntariamente tocando un botón mágico durante la partida, acompañada de animaciones y feedback visual premium.
 
 ---
 

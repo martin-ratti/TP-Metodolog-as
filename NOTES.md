@@ -286,3 +286,35 @@ nunca prueba el `index.html`, el módulo de arranque ni la integración completa
 El AT con Playwright abre un navegador real contra `http://localhost:5173`,
 así que su verde significa que el juego **funciona de verdad**, no solo que el
 componente renderiza.
+
+---
+
+## AT15 — Teclado en pantalla
+
+> El usuario ve un teclado virtual y puede clickear letras; las letras muestran si fueron acertadas o falladas.
+
+### UTs del objeto `Ahorcado`
+
+| # | Descripción | Por qué existe |
+|---|---|---|
+| 1 | `estadoLetra()` devuelve 'acertada' si la letra está en adivinadas | La UI necesita saber pintar la tecla de verde |
+| 2 | `estadoLetra()` devuelve 'fallada' si la letra está en erradas | La UI necesita saber pintar la tecla de rojo |
+| 3 | `estadoLetra()` devuelve 'disponible' si no se usó | Estado por defecto de la tecla |
+
+### Refactor
+Se agregó el método `estadoLetra(letra)` al dominio para no exponer directamente los Sets internos (`letrasAdivinadas`, `letrasErradas`) a la UI. Esto mantiene el encapsulamiento puro. Todo el layout del teclado y manejo de eventos se resolvió en `main.ts`.
+
+---
+
+## AT16 — Pistas y categorías
+
+> El juego permite configurar una pista asociada a la palabra, que el jugador puede revelar con un botón.
+
+### UTs del objeto `Ahorcado`
+
+| # | Descripción | Por qué existe |
+|---|---|---|
+| 1 | `Ahorcado` acepta una pista opcional en su constructor y la expone con `pista()` | El dominio debe alojar el contexto de la palabra actual |
+
+### Refactor
+Se modificó el catálogo de palabras en `palabras.ts` pasando de ser un arreglo de strings a un arreglo de objetos `{ palabra, pista }`. La UI inyecta la pista desde la URL o el catálogo directamente al constructor del juego. Se implementó el renderizado del botón mágico dorado y animaciones de Game Over (temblor rojo neón) en la UI, sin ensuciar la lógica del dominio, mejorando significativamente la experiencia de usuario (Aesthetics & Feel).
