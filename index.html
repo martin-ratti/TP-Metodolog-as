@@ -1,365 +1,458 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ahorcado</title>
-    <style>
-      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-      body {
-        font-family: 'Inter', sans-serif;
-        background-color: #1a1a2e;
-        color: #fff;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        overflow-y: auto;
-        overflow-x: hidden;
-      }
-      
-      .bg-stars {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: -1;
-        overflow: hidden;
-      }
-      .star {
-        position: absolute;
-        color: #ffffff;
-        font-family: monospace;
-        font-size: 1.5rem;
-        font-weight: bold;
-        text-shadow: 0 0 5px #fff, 0 0 10px #fff;
-        opacity: 0.15;
-        animation: twinkle 4s infinite alternate ease-in-out;
-      }
-      @keyframes twinkle {
-        0% { opacity: 0.05; transform: scale(0.8) rotate(15deg); }
-        100% { opacity: 0.3; transform: scale(1.2) rotate(45deg); }
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ahorcado</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-      #app {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 24px;
-        width: 100%;
-        max-width: 480px;
-        padding: 32px 16px;
-        text-align: center;
-      }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #1a1a2e;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
 
-      .start-screen,
-      .game-screen {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 24px;
+    .bg-stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      color: #ffffff;
+      font-family: monospace;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-shadow: 0 0 5px #fff, 0 0 10px #fff;
+      opacity: 0.15;
+      animation: twinkle 4s infinite alternate ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0% {
+        opacity: 0.05;
+        transform: scale(0.8) rotate(15deg);
       }
 
-      [data-testid="start-screen"] {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        width: 100%;
+      100% {
+        opacity: 0.3;
+        transform: scale(1.2) rotate(45deg);
+      }
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      width: 100%;
+      max-width: 480px;
+      padding: 32px 16px;
+      text-align: center;
+    }
+
+    .start-screen,
+    .game-screen {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    [data-testid="start-screen"] {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: 7px;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #ffb6b9, #e94560);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 4px rgba(233, 69, 96, 0.3));
+    }
+
+    /* ── SVG gallows ── */
+    .gallows svg {
+      filter: drop-shadow(0 0 8px rgba(233, 69, 96, 0.4));
+    }
+
+    @keyframes draw {
+      from {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100;
       }
 
-      h1 {
-        font-size: 2.5rem;
-        font-weight: 800;
-        letter-spacing: 7px;
-        text-transform: uppercase;
-        background: linear-gradient(135deg, #ffb6b9, #e94560);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        filter: drop-shadow(0 2px 4px rgba(233, 69, 96, 0.3));
+      to {
+        stroke-dashoffset: 0;
       }
+    }
 
-      /* ── SVG gallows ── */
-      .gallows svg {
-        filter: drop-shadow(0 0 8px rgba(233, 69, 96, 0.4));
-      }
+    /* ── palabra ── */
+    [data-testid="word"] {
+      font-size: 2rem;
+      letter-spacing: 12px;
+      font-weight: 700;
+      color: #f5f5f5;
+      min-height: 2.5rem;
+      text-align: center;
+    }
 
-      @keyframes draw {
-        from { stroke-dasharray: 100; stroke-dashoffset: 100; }
-        to { stroke-dashoffset: 0; }
-      }
+    /* ── vidas ── */
+    .lives-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+      color: #aaa;
+    }
 
-      /* ── palabra ── */
-      [data-testid="word"] {
-        font-size: 2rem;
-        letter-spacing: 12px;
-        font-weight: 700;
-        color: #f5f5f5;
-        min-height: 2.5rem;
-        text-align: center;
-      }
+    .hearts {
+      display: flex;
+      gap: 4px;
+    }
 
-      /* ── vidas ── */
-      .lives-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 1rem;
-        color: #aaa;
-      }
+    .heart {
+      font-size: 1.2rem;
+      transition: opacity 0.3s;
+    }
 
-      .hearts {
-        display: flex;
-        gap: 4px;
-      }
+    .heart.lost {
+      opacity: 0.15;
+    }
 
-      .heart {
-        font-size: 1.2rem;
-        transition: opacity 0.3s;
-      }
+    [data-testid="lives"] {
+      display: none;
+    }
 
-      .heart.lost { opacity: 0.15; }
+    /* solo para los AT, oculto visualmente */
 
-      [data-testid="lives"] { display: none; } /* solo para los AT, oculto visualmente */
+    /* ── mensaje ── */
+    [data-testid="message"] {
+      font-size: 1.1rem;
+      font-weight: 600;
+      min-height: 1.5rem;
+      color: #e94560;
+      letter-spacing: 2px;
+      text-align: center;
+    }
 
-      /* ── mensaje ── */
-      [data-testid="message"] {
-        font-size: 1.1rem;
-        font-weight: 600;
-        min-height: 1.5rem;
-        color: #e94560;
-        letter-spacing: 2px;
-        text-align: center;
-      }
+    /* ── letras intentadas ── */
+    .used-letters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      min-height: 36px;
+    }
 
-      /* ── letras intentadas ── */
-      .used-letters {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        justify-content: center;
-        min-height: 36px;
-      }
+    .used-letter {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
 
-      .used-letter {
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 0.85rem;
-        font-weight: 700;
-        letter-spacing: 1px;
-      }
+    .used-letter.hit {
+      background: #16213e;
+      color: #4ecca3;
+      border: 1px solid #4ecca3;
+    }
 
-      .used-letter.hit  { background: #16213e; color: #4ecca3; border: 1px solid #4ecca3; }
-      .used-letter.miss { background: #16213e; color: #e94560; border: 1px solid #e94560; }
+    .used-letter.miss {
+      background: #16213e;
+      color: #e94560;
+      border: 1px solid #e94560;
+    }
 
-      /* ── teclado virtual ── */
-      .keyboard {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        width: 100%;
-        max-width: 400px;
-        margin-top: 10px;
-      }
+    /* ── teclado virtual ── */
+    .keyboard {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      max-width: 400px;
+      margin-top: 10px;
+    }
 
-      .keyboard-row {
-        display: flex;
-        justify-content: center;
-        gap: 6px;
-      }
+    .keyboard-row {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+    }
 
-      .key {
-        width: 34px;
-        height: 46px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.1rem;
-        font-weight: 700;
-        background: #16213e;
-        color: #eee;
-        border: 2px solid #0f3460;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
+    .key {
+      width: 34px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: #16213e;
+      color: #eee;
+      border: 2px solid #0f3460;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
 
-      .key:not([disabled]):hover {
-        background: #1a4a80;
-        border-color: #e94560;
-        transform: translateY(-2px);
-      }
+    .key:not([disabled]):hover {
+      background: #1a4a80;
+      border-color: #e94560;
+      transform: translateY(-2px);
+    }
 
-      .key:not([disabled]):active {
-        transform: scale(0.95);
-      }
+    .key:not([disabled]):active {
+      transform: scale(0.95);
+    }
 
-      .key.acertada {
-        background: #16213e;
-        color: #4ecca3;
-        border-color: #4ecca3;
-        opacity: 0.8;
-      }
+    .key.acertada {
+      background: #16213e;
+      color: #4ecca3;
+      border-color: #4ecca3;
+      opacity: 0.8;
+    }
 
-      .key.fallada {
-        background: #16213e;
-        color: #e94560;
-        border-color: #e94560;
-        opacity: 0.5;
-      }
+    .key.fallada {
+      background: #16213e;
+      color: #e94560;
+      border-color: #e94560;
+      opacity: 0.5;
+    }
 
-      button {
-        padding: 12px 22px;
-        font-size: 1rem;
-        font-weight: 700;
-        letter-spacing: 1px;
-        background: #e94560;
-        color: #fff;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: background 0.2s, transform 0.1s;
-        white-space: nowrap;
-      }
+    button {
+      padding: 12px 22px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: #e94560;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      white-space: nowrap;
+    }
 
-      button:hover  { background: #c73652; }
-      button:active { transform: scale(0.97); }
+    button:hover {
+      background: #c73652;
+    }
 
-      .hint-btn {
-        background: #16213e;
-        border: 2px solid #ffd700;
-        color: #ffd700;
-        font-size: 1rem;
-        padding: 8px 16px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.2s;
-        box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
-      }
-      .hint-btn:hover {
-        background: #ffd700;
-        color: #16213e;
-        box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-      }
+    button:active {
+      transform: scale(0.97);
+    }
 
-      button.secondary {
-        background: #0f3460;
-      }
-      button.secondary:hover { background: #1a4a80; }
+    .hint-btn {
+      background: #16213e;
+      border: 2px solid #ffd700;
+      color: #ffd700;
+      font-size: 1rem;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+    }
 
-      /* ── dificultad ── */
-      .dificultad {
-        display: flex;
-        gap: 10px;
-        border: none;
-        padding: 0;
-      }
+    .hint-btn:hover {
+      background: #ffd700;
+      color: #16213e;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    }
 
-      .dificultad legend {
-        font-size: 0.85rem;
-        letter-spacing: 1px;
-        color: #aaa;
-        margin-bottom: 8px;
-        text-align: center;
-        width: 100%;
-      }
+    button.secondary {
+      background: #0f3460;
+    }
 
-      .dificultad label {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 10px 12px;
-        font-size: 0.95rem;
-        font-weight: 600;
-        letter-spacing: 1px;
-        background: #16213e;
-        color: #aaa;
-        border: 2px solid #0f3460;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: border-color 0.2s, color 0.2s;
-      }
+    button.secondary:hover {
+      background: #1a4a80;
+    }
 
-      .dificultad label:hover {
-        border-color: #e94560;
-      }
+    /* ── dificultad ── */
+    .play-btn {
+      width: 100%;
+      padding: 16px 24px;
+      font-size: 1.25rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #e94560, #c73652);
+      box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+      border-radius: 12px;
+      letter-spacing: 3px;
+      transition: all 0.3s ease;
+    }
 
-      .dificultad input[type="radio"] {
-        /* oculto visualmente, pero accesible — Playwright sigue viendo el radio */
-        position: absolute;
+    .play-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(233, 69, 96, 0.6);
+      background: linear-gradient(135deg, #f05a74, #d1425e);
+    }
+
+    /* ── dificultad ── */
+    .dificultad {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      border: none;
+      padding: 0;
+      margin: 10px 0 20px 0;
+    }
+
+    .dificultad legend {
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      color: #8892b0;
+      margin-bottom: 12px;
+      text-align: center;
+      width: 100%;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .dificultad label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 90px;
+      height: 50px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      background: #16213e;
+      color: #8892b0;
+      border: 2px solid #0f3460;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .dificultad label:hover {
+      background: #1a2a4f;
+      color: #fff;
+      border-color: #e94560;
+      transform: translateY(-2px);
+    }
+
+    .dificultad input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .dificultad input[type="radio"]:checked+label,
+    .dificultad label:has(input[type="radio"]:checked) {
+      background: #e94560;
+      color: #fff;
+      border-color: #e94560;
+      box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+    }
+
+    /* ── modal ── */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(26, 26, 46, 0.85);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      animation: appearModal 0.3s ease-out forwards;
+    }
+
+    .modal-content {
+      background: #16213e;
+      padding: 40px;
+      border-radius: 16px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content.neon-green {
+      border: 2px solid #39ff14;
+      box-shadow: 0 0 15px #39ff14, inset 0 0 15px #39ff14;
+    }
+
+    .modal-content.neon-green h2 {
+      color: #39ff14;
+      text-shadow: 0 0 10px #39ff14;
+    }
+
+    .modal-content.neon-red {
+      border: 2px solid #ff073a;
+      box-shadow: 0 0 15px #ff073a, inset 0 0 15px #ff073a;
+    }
+
+    .modal-content.neon-red h2 {
+      color: #ff073a;
+      text-shadow: 0 0 10px #ff073a;
+    }
+
+    .modal-content h2 {
+      font-size: 2.5rem;
+      letter-spacing: 4px;
+      margin-bottom: 10px;
+    }
+
+    .btn-modal {
+      width: 100%;
+    }
+
+    @keyframes appearModal {
+      from {
         opacity: 0;
-        width: 0;
-        height: 0;
+        transform: scale(0.9);
       }
 
-      .dificultad input[type="radio"]:checked + label,
-      .dificultad label:has(input[type="radio"]:checked) {
-        border-color: #e94560;
-        color: #fff;
-        background: #1a4a80;
+      to {
+        opacity: 1;
+        transform: scale(1);
       }
+    }
+  </style>
+</head>
 
-      /* ── modal ── */
-      .modal-overlay {
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(26, 26, 46, 0.85);
-        backdrop-filter: blur(4px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 100;
-        animation: appearModal 0.3s ease-out forwards;
-      }
-      .modal-content {
-        background: #16213e;
-        padding: 40px;
-        border-radius: 16px;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      }
-      .modal-content.neon-green {
-        border: 2px solid #39ff14;
-        box-shadow: 0 0 15px #39ff14, inset 0 0 15px #39ff14;
-      }
-      .modal-content.neon-green h2 {
-        color: #39ff14;
-        text-shadow: 0 0 10px #39ff14;
-      }
-      .modal-content.neon-red {
-        border: 2px solid #ff073a;
-        box-shadow: 0 0 15px #ff073a, inset 0 0 15px #ff073a;
-      }
-      .modal-content.neon-red h2 {
-        color: #ff073a;
-        text-shadow: 0 0 10px #ff073a;
-      }
-      .modal-content h2 {
-        font-size: 2.5rem;
-        letter-spacing: 4px;
-        margin-bottom: 10px;
-      }
-      .btn-modal {
-        width: 100%;
-      }
-      @keyframes appearModal {
-        from { opacity: 0; transform: scale(0.9); }
-        to { opacity: 1; transform: scale(1); }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/ui/index.ts"></script>
-  </body>
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/ui/index.ts"></script>
+</body>
+
 </html>

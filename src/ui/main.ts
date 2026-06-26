@@ -113,7 +113,7 @@ function mostrarPantallaInicio(
         </label>
       </fieldset>
       
-      <button>Jugar</button>
+      <button class="play-btn">Jugar</button>
     </section>
   `;
 
