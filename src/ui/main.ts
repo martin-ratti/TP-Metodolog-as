@@ -39,8 +39,8 @@ function corazones(vidas: number): string {
 }
 
 function letrasUsadas(game: Ahorcado): string {
-  const hits  = (game as any).letrasAdivinadas as Set<string>;
-  const miss  = (game as any).letrasErradas   as Set<string>;
+  const hits = (game as any).letrasAdivinadas as Set<string>;
+  const miss = (game as any).letrasErradas as Set<string>;
   const chips = [
     ...[...hits].map(l => `<span class="used-letter hit">${l}</span>`),
     ...[...miss].map(l => `<span class="used-letter miss">${l}</span>`),
@@ -67,6 +67,23 @@ function mostrarPantallaInicio(
   root.innerHTML = `
     <section data-testid="start-screen">
       <h1>Ahorcado</h1>
+      
+      <div class="start-hero" style="margin: 20px 0;">
+        <svg width="160" height="200" style="filter: drop-shadow(0 0 10px rgba(255, 182, 185, 0.3));">
+          <line x1="20" y1="190" x2="140" y2="190" stroke="#b0b5c9" stroke-width="4" stroke-linecap="round"/>
+          <line x1="60" y1="190" x2="60" y2="10"  stroke="#b0b5c9" stroke-width="4" stroke-linecap="round"/>
+          <line x1="60" y1="10"  x2="100" y2="10"  stroke="#b0b5c9" stroke-width="4" stroke-linecap="round"/>
+          <line x1="100" y1="10" x2="100" y2="25"  stroke="#b0b5c9" stroke-width="4" stroke-linecap="round"/>
+          
+          <circle cx="100" cy="40" r="15" stroke="#ffb6b9" stroke-width="4" fill="none"/>
+          <line x1="100" y1="55" x2="100" y2="110" stroke="#ffb6b9" stroke-width="4" stroke-linecap="round"/>
+          <line x1="100" y1="70" x2="70" y2="95" stroke="#ffb6b9" stroke-width="4" stroke-linecap="round"/>
+          <line x1="100" y1="70" x2="130" y2="95" stroke="#ffb6b9" stroke-width="4" stroke-linecap="round"/>
+          <line x1="100" y1="110" x2="75" y2="140" stroke="#ffb6b9" stroke-width="4" stroke-linecap="round"/>
+          <line x1="100" y1="110" x2="125" y2="140" stroke="#ffb6b9" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+      </div>
+
       <fieldset class="dificultad" data-testid="dificultad">
         <legend>Dificultad</legend>
         <label>
@@ -144,7 +161,7 @@ function render(
     </section>
   `;
 
-  const input       = root.querySelector("input")!;
+  const input = root.querySelector("input")!;
   const btnAdivinar = root.querySelector("button:not(.secondary)")!;
   if (!game.terminado()) input.focus();
 
@@ -155,7 +172,7 @@ function render(
     input.value = "";
     const aviso =
       resultado === "repetida" ? "Letra ya ingresada" :
-      resultado === "invalida" ? "Entrada inválida"   : "";
+        resultado === "invalida" ? "Entrada inválida" : "";
     render(root, game, getWord, dificultad, setDificultad, getDificultad, aviso);
   };
 
