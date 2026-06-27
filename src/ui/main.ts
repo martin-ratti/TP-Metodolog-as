@@ -136,6 +136,7 @@ function mostrarPantallaInicio(
       </fieldset>
       
       <button class="play-btn">Jugar</button>
+      <button class="secondary two-players-btn">Dos Jugadores</button>
     </section>
   `;
 
@@ -157,8 +158,8 @@ function mostrarPantallaInicio(
     });
   });
 
-  const btnJugar = root.querySelector('button')!;
-  btnJugar.addEventListener('click', () =>
+  const btnJugar = root.querySelector('.play-btn') as HTMLButtonElement | null;
+  btnJugar?.addEventListener('click', () =>
     iniciarPartida(
       root,
       getWordData,
@@ -166,6 +167,45 @@ function mostrarPantallaInicio(
       setDificultad,
       getDificultad,
     ),
+  );
+
+  const btnDosJugadores = root.querySelector('.two-players-btn') as HTMLButtonElement | null;
+  btnDosJugadores?.addEventListener('click', () =>
+    mostrarPantallaDosJugadores(root, getWordData, setDificultad, getDificultad),
+  );
+}
+
+function mostrarPantallaDosJugadores(
+  root: HTMLElement,
+  getWordData: () => PalabraConPista,
+  setDificultad: (nivel: string) => void,
+  getDificultad: () => string,
+): void {
+  root.innerHTML = `
+    <section data-testid="two-players-screen">
+      <h1>Modo Dos Jugadores</h1>
+      <label for="secret-word">Palabra secreta</label>
+      <input id="secret-word" type="password" />
+      <label for="hint-input">Pista</label>
+      <input id="hint-input" type="text" />
+      <button class="start-two-players-btn">Iniciar</button>
+      <button class="back-to-menu" style="margin-top: 15px">Volver al menú</button>
+    </section>
+  `;
+
+  const btnIniciar = root.querySelector('.start-two-players-btn') as HTMLButtonElement | null;
+  btnIniciar?.addEventListener('click', () => {
+    const inputPalabra = root.querySelector('#secret-word') as HTMLInputElement | null;
+    const inputPista = root.querySelector('#hint-input') as HTMLInputElement | null;
+    const palabra = inputPalabra?.value.trim() ?? '';
+    const pista = inputPista?.value.trim() ?? '';
+    const game = new Ahorcado(palabra, vidasSegunDificultad(getDificultad()), pista);
+    render(root, game, getWordData, getDificultad(), setDificultad, getDificultad);
+  });
+
+  const btnVolver = root.querySelector('button.back-to-menu') as HTMLButtonElement | null;
+  btnVolver?.addEventListener('click', () =>
+    mostrarPantallaInicio(root, getWordData, setDificultad, getDificultad),
   );
 }
 
