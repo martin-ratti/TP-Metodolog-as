@@ -84,4 +84,3 @@ function normalizar(texto: string): string {
     .replace(/[ÓÒÔÖ]/g, 'O')
     .replace(/[ÚÙÛÜ]/g, 'U');
 }
-
