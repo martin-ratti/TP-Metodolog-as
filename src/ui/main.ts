@@ -202,6 +202,7 @@ function render(
       : '';
   const vidas = game.vidas();
   const pista = game.pista();
+  const marcador = game.resultadoSesion();
 
   const modalHTML = game.terminado()
     ? `
@@ -234,6 +235,7 @@ function render(
         <div class="hearts">${corazones(vidas)}</div>
       </div>
       <span data-testid="lives" style="display:none">${vidas}</span>
+      <p data-testid="session-score">Victorias: ${marcador.victorias} Derrotas: ${marcador.derrotas}</p>
       ${pistaHTML}
       ${normalMessageHTML}
       ${tecladoHTML(game)}

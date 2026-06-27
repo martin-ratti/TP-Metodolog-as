@@ -1,11 +1,11 @@
 export class Ahorcado {
+  private static victorias = 0;
+  private static derrotas = 0;
   private palabra: string;
   private letrasAdivinadas: Set<string> = new Set();
   private letrasErradas: Set<string> = new Set();
   private vidasDisponibles: number;
   private _pista: string;
-  private victorias = 0;
-  private derrotas = 0;
 
   constructor(palabra: string, vidasDisponibles = 6, pista = '') {
     this.palabra = normalizar(palabra);
@@ -25,13 +25,13 @@ export class Ahorcado {
     if (this.palabra.includes(l)) {
       this.letrasAdivinadas.add(l);
       if (this.ganado()) {
-        this.victorias += 1;
+        Ahorcado.victorias += 1;
       }
       return 'acertada';
     } else {
       this.letrasErradas.add(l);
       if (this.perdido()) {
-        this.derrotas += 1;
+        Ahorcado.derrotas += 1;
       }
       return 'fallada';
     }
@@ -82,7 +82,7 @@ export class Ahorcado {
   }
 
   resultadoSesion(): { victorias: number; derrotas: number } {
-    return { victorias: this.victorias, derrotas: this.derrotas };
+    return { victorias: Ahorcado.victorias, derrotas: Ahorcado.derrotas };
   }
 }
 
