@@ -28,7 +28,7 @@ Given(
 When(
   'el jugador elige la dificultad {string}',
   async ({ page }, nivel: string) => {
-    await page.getByRole('radio', { name: nivel }).check();
+    await page.getByRole('button', { name: nivel, exact: true }).click();
   },
 );
 

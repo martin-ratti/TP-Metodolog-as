@@ -127,32 +127,22 @@ function mostrarPantallaInicio(
         </svg>
       </div>
 
-      <fieldset class="dificultad" data-testid="dificultad">
-        <legend>Dificultad</legend>
-        <label>
-          <input type="radio" name="dificultad" value="facil" ${getDificultad() === 'facil' ? 'checked' : ''}>
-          Fácil
-        </label>
-        <label>
-          <input type="radio" name="dificultad" value="normal" ${getDificultad() === 'normal' ? 'checked' : ''}>
-          Normal
-        </label>
-        <label>
-          <input type="radio" name="dificultad" value="dificil" ${getDificultad() === 'dificil' ? 'checked' : ''}>
-          Difícil
-        </label>
-      </fieldset>
+      <div class="dificultad" data-testid="dificultad">
+        <span class="dificultad-label">Dificultad</span>
+        <button class="dificultad-btn ${getDificultad() === 'facil' ? 'selected' : ''}" data-nivel="facil">Fácil</button>
+        <button class="dificultad-btn ${getDificultad() === 'normal' ? 'selected' : ''}" data-nivel="normal">Normal</button>
+        <button class="dificultad-btn ${getDificultad() === 'dificil' ? 'selected' : ''}" data-nivel="dificil">Difícil</button>
+      </div>
       
       <button class="play-btn">Jugar</button>
       <button class="secondary two-players-btn">Dos Jugadores</button>
     </section>
   `;
 
-  const fieldset = root.querySelector('fieldset')!;
-  fieldset.addEventListener('change', (e) => {
-    const target = e.target as HTMLInputElement;
-    if (target.name === 'dificultad') {
-      setDificultad(target.value);
+  const dificultadBtns = root.querySelectorAll<HTMLButtonElement>('.dificultad-btn');
+  dificultadBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      setDificultad(btn.dataset.nivel!);
       mostrarPantallaInicio(
         root,
         getWordData,
@@ -160,15 +150,6 @@ function mostrarPantallaInicio(
         getDificultad,
         sessionStats,
       );
-    }
-  });
-
-  const radios = root.querySelectorAll("input[type='radio']");
-  radios.forEach((radio) => {
-    radio.addEventListener('click', () => {
-      if ((radio as HTMLInputElement).value === getDificultad()) {
-        setDificultad((radio as HTMLInputElement).value);
-      }
     });
   });
 
