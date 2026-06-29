@@ -129,9 +129,11 @@ function mostrarPantallaInicio(
 
       <div class="dificultad" data-testid="dificultad">
         <span class="dificultad-label">Dificultad</span>
-        <button class="dificultad-btn ${getDificultad() === 'facil' ? 'selected' : ''}" data-nivel="facil">Fácil</button>
-        <button class="dificultad-btn ${getDificultad() === 'normal' ? 'selected' : ''}" data-nivel="normal">Normal</button>
-        <button class="dificultad-btn ${getDificultad() === 'dificil' ? 'selected' : ''}" data-nivel="dificil">Difícil</button>
+        <div class="dificultad-btns">
+          <button class="dificultad-btn ${getDificultad() === 'facil' ? 'selected' : ''}" data-nivel="facil">Fácil</button>
+          <button class="dificultad-btn ${getDificultad() === 'normal' ? 'selected' : ''}" data-nivel="normal">Normal</button>
+          <button class="dificultad-btn ${getDificultad() === 'dificil' ? 'selected' : ''}" data-nivel="dificil">Difícil</button>
+        </div>
       </div>
       
       <button class="play-btn">Jugar</button>

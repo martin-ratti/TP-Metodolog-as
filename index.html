@@ -357,30 +357,30 @@
     /* ── dificultad ── */
     .dificultad {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
       gap: 12px;
-      border: none;
       padding: 0;
-      margin: 10px 0 20px 0;
+      margin: 0;
     }
 
-    .dificultad legend {
-      font-size: 0.9rem;
-      letter-spacing: 1px;
+    .dificultad-label {
+      font-size: 0.75rem;
+      letter-spacing: 2px;
       color: #8892b0;
-      margin-bottom: 12px;
-      text-align: center;
-      width: 100%;
       font-weight: 600;
       text-transform: uppercase;
     }
 
-    .dificultad label {
+    .dificultad-btns {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      gap: 10px;
+    }
+
+    .dificultad-btn {
       width: 90px;
-      height: 50px;
+      height: 44px;
+      padding: 0;
       font-size: 0.9rem;
       font-weight: 800;
       letter-spacing: 1px;
@@ -392,24 +392,14 @@
       transition: all 0.2s ease;
     }
 
-    .dificultad label:hover {
+    .dificultad-btn:hover {
       background: #1a2a4f;
       color: #fff;
       border-color: #e94560;
       transform: translateY(-2px);
     }
 
-    .dificultad input[type="radio"] {
-      position: static;
-      opacity: 1;
-      width: 16px;
-      height: 16px;
-      margin-right: 8px;
-      accent-color: #e94560;
-    }
-
-    .dificultad input[type="radio"]:checked+label,
-    .dificultad label:has(input[type="radio"]:checked) {
+    .dificultad-btn.selected {
       background: #e94560;
       color: #fff;
       border-color: #e94560;
