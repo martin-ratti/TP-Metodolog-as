@@ -237,6 +237,9 @@ function mostrarPantallaDosJugadores(
       setDificultad,
       getDificultad,
       sessionStats,
+      '',
+      false,
+      true,
     );
   });
 
@@ -290,6 +293,7 @@ function render(
   sessionStats: { victorias: number; derrotas: number },
   mensaje = '',
   pistaMostrada = false,
+  dosJugadores = false,
 ): void {
   const mensajeFin = game.ganado()
     ? 'GANASTE'
@@ -364,6 +368,7 @@ function render(
       sessionStats,
       mensajeSegunResultado(resultado),
       pistaMostrada,
+      dosJugadores,
     );
   });
   root.appendChild(inputOculto);
@@ -381,6 +386,7 @@ function render(
         sessionStats,
         `Pista: ${pista}`,
         true,
+        dosJugadores,
       );
     });
   }
@@ -402,6 +408,7 @@ function render(
         sessionStats,
         siguienteMensaje,
         pistaMostrada,
+        dosJugadores,
       );
     });
   });
@@ -421,6 +428,7 @@ function render(
         sessionStats,
         mensajeSegunResultado(resultado),
         pistaMostrada,
+        dosJugadores,
       );
     }
   };
@@ -429,16 +437,13 @@ function render(
 
   const btnReiniciar = root.querySelector('.restart-btn');
   if (btnReiniciar) {
-    btnReiniciar.addEventListener('click', () =>
-      iniciarPartida(
-        root,
-        getWordData,
-        dificultad,
-        setDificultad,
-        getDificultad,
-        sessionStats,
-      ),
-    );
+    btnReiniciar.addEventListener('click', () => {
+      if (dosJugadores) {
+        mostrarPantallaDosJugadores(root, getWordData, setDificultad, getDificultad, sessionStats);
+      } else {
+        iniciarPartida(root, getWordData, dificultad, setDificultad, getDificultad, sessionStats);
+      }
+    });
   }
 
   const btnVolver = root.querySelector('button.back-to-menu')!;
