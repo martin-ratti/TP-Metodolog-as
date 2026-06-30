@@ -4,6 +4,10 @@
   <p>
     <b>Trabajo Práctico Universitario Grupal</b>
   </p>
+
+  <a href="https://martin-ratti.github.io/TP-Ahorcado" target="_blank">
+    <img src="https://img.shields.io/badge/Live-Demo-blue?style=for-the-badge&logo=react&logoColor=white" />
+  </a>
 </div>
 
 <hr>
