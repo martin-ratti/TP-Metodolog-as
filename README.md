@@ -23,7 +23,7 @@ Este repositorio contiene el código fuente del tradicional **Juego del Ahorcado
 * 🧪 **Vitest:** Framework de testing unitario para la lógica del dominio (loop interno).
 * 🥒 **Playwright & playwright-bdd:** Herramientas para la automatización de Acceptance Tests en Gherkin/Cucumber sobre un navegador web real (loop externo).
 * ⚙️ **GitHub Actions:** Pipeline de Integración Continua (CI) que automatiza validaciones en cada cambio (tests, linting y build).
-
+* 🚀 **GitHub Pages:** Alojamiento estático y despliegue (deploy) continuo de la aplicación para hacerla accesible públicamente.
 ---
 
 ## 📐 Arquitectura y Diseño (Separación de Capas)
